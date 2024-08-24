@@ -5,8 +5,13 @@ const NUM_POLYGONS = 10
 
 function setup() {
 	createCanvas(windowWidth, windowHeight);
-	for (let i = 0; i < NUM_POLYGONS; i++) {
-		polygons.push(new Shape());
+	let attempts = 0;
+	while (polygons.length < NUM_POLYGONS && attempts < 1000) {
+		let newShape = new Shape();
+		if (!newShape.isOverlapping) {
+			polygons.push(newShape);
+		}
+		attempts++;
 	}
 }
 
@@ -35,7 +40,7 @@ function draw() {
 
 	// Check for overlaps
 	for (let poly of polygons) {
-		if (poly.isOverlapping()) {
+		if (poly.isOverlapping) {
 			stroke(255, 0, 0);
 			strokeWeight(2);
 			fill(255, 0, 0, 50);
@@ -47,7 +52,7 @@ function draw() {
 function mousePressed() {
 	if (selectedPolygon) {
 		// if legal, drop
-		if (!selectedPolygon.isOverlapping()) {
+		if (!selectedPolygon.isOverlapping) {
 			selectedPolygon = null;
 		}
 	} else {
@@ -60,35 +65,38 @@ function mousePressed() {
 	}
 }
 
+
 function mouseWheel(event) {
-	if (selectedPolygon) {
-		let angle = event.delta / 100;
-		selectedPolygon.rotate(angle);
-		return false; // Prevent default scrolling
-	}
+	if (!selectedPolygon) return false;
+
+	const MAX_SPEED = 200
+	let angle = constrain(event.delta, -MAX_SPEED, MAX_SPEED)
+	let isFine = keyIsDown(91);
+	let scalar = isFine ? 0.0005 : 0.003;
+	selectedPolygon.rotate(angle * scalar);
+	return false;
+
 }
-
-
-
 
 class Shape {
 	constructor() {
-		this.numVertices = int(random(4, 8));
-		this.radius = int(random(50, 100));
+		this.numVertices = int(random(4, 12));
 		this.vertices = [];
 		this.init();
 	}
 	init() {
-		let center = createVector(random(width), random(height));
+		let center = createVector(random(200,width-200), random(200,height-200));
+		let radius = random(40, 100);
 		for (let i = 0; i < this.numVertices; i++) {
 			let angle = random(TWO_PI);
-			let x = center.x + this.radius * cos(angle);
-			let y = center.y + this.radius * sin(angle);
+			let x = center.x + radius * cos(angle);
+			let y = center.y + radius * sin(angle);
 			this.vertices.push(createVector(x, y));
 		}
 		this.vertices.sort((a, b) => atan2(a.y - center.y, a.x - center.x) - atan2(b.y - center.y, b.x - center.x));
+
 	}
-	isOverlapping() {
+	get isOverlapping() {
 		for (let other of polygons) {
 			if (other !== this && collidePolyPoly(this.vertices, other.vertices)) {
 				return true;
@@ -111,8 +119,8 @@ class Shape {
 	}
 	get center() {
 		let c = createVector(0, 0);
-		c.x = this.vertices.map(v=>v.x).reduce((a, b) => a + b, 0) / this.numVertices
-		c.y = this.vertices.map(v=>v.y).reduce((a, b) => a + b, 0) / this.numVertices
+		c.x = this.vertices.map(v => v.x).reduce((a, b) => a + b, 0) / this.numVertices
+		c.y = this.vertices.map(v => v.y).reduce((a, b) => a + b, 0) / this.numVertices
 		return c
 	}
 	rotate(angle) {
