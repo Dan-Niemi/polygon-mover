@@ -4,14 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Polygon Drag and Rotate</title>
+<script defer src="index.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.10.0/p5.min.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <script defer src="https://unpkg.com/p5.collide2d"></script>
-
-  <style>
-    body { margin: 0; overflow: hidden; }
-  </style>
+  <link rel="stylesheet" href="index.css">
 </head>
 <body>
-  <script src="index.js"></script>
+  <aside style="position: absolute;" x-data="stats()">
+    <p x-text ="area"></p>
+  </aside>
+  
 </body>
 </html>
