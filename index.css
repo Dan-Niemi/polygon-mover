@@ -4,3 +4,18 @@ body { line-height: 1.5; -webkit-font-smoothing: antialiased; font-family: syste
 img, picture, video, canvas, svg { display: block; max-width: 100%; }
 input, button, textarea, select { font: inherit; }
 p, h1, h2, h3, h4, h5, h6 { overflow-wrap: break-word; }
+
+.debug {
+	position: absolute;
+	top: 0;
+	left:0;
+	background-color: #00000022;
+	padding: 1rem;
+	display: flex;
+	flex-direction: column;
+	gap: .25rem;
+}
+.debug label {
+display: flex;
+gap: 1rem;
+}

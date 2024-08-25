@@ -4,16 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Polygon Drag and Rotate</title>
-<script defer src="index.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.10.0/p5.min.js"></script>
-  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.10.0/p5.min.js"></script>
   <script defer src="https://unpkg.com/p5.collide2d"></script>
+  <script defer src="Rock.js"></script>
+  <script defer src="Hull.js"></script>
+  <script defer src="index.js"></script>
   <link rel="stylesheet" href="index.css">
 </head>
 <body>
-  <aside style="position: absolute;" x-data="stats()">
-    <p x-text ="area"></p>
-  </aside>
+  <div class="debug">
+      <span id="area"></span>
+      <span id="polygons"></span>
+      <span id="efficiency"></span>
+      <label>Show Area<input type="checkbox" name="" id="" onclick="hull.toggle(event)"></label>
+  </div>
   
 </body>
 </html>
