@@ -1,23 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Polygon Drag and Rotate</title>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.10.0/p5.min.js"></script>
   <script defer src="https://unpkg.com/p5.collide2d"></script>
+  <script defer src="alpine.js"></script>
   <script defer src="Rock.js"></script>
   <script defer src="Hull.js"></script>
   <script defer src="index.js"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <link rel="stylesheet" href="index.css">
 </head>
-<body>
-  <div class="debug">
-      <span id="area"></span>
-      <span id="polygons"></span>
-      <span id="efficiency"></span>
-      <label>Show Area<input type="checkbox" name="" id="" onclick="hull.toggle(event)"></label>
+
+<body x-data="game()">
+  <div x-show="state === 1" class="menu">
+    <div class="panel">
+        <ul class="instructions">
+          <li>
+            <p>Click to select, click again to place.</p>
+            <small>Shapes cannot overlap.</small>
+          </li>
+          <li>
+            <p>Use the mouse wheel to rotate.</p>
+            <small>Hold CMD/CTRL for fine adjustment.</small>
+          </li>
+        </ul>
+      <div class="options"></div>
+      <button @click="state = 2" class="play">PLAY!</button>
+
+    </div>
+
   </div>
-  
+  <div class="debug">
+    <span id="area"></span>
+    <span id="polygons"></span>
+    <span id="efficiency"></span>
+    <label>Show Area<input type="checkbox" name="" id="" onclick="hull.toggle(event)"></label>
+  </div>
 </body>
+
 </html>
