@@ -1,11 +1,7 @@
 const NUM_POLYGONS = 15;
-const POLYGON_MIN_SIZE = 40;
-const POLYGON_MAX_SIZE = 100;
 const FIELD_RADIUS = 400;
 
-let polygons = [];
-let selectedPolygon = null;
-let hull = null;
+let polygons,selectedPolygon,hull
 
 const debug = {
   hArea: document.querySelector("#area"),
@@ -16,24 +12,26 @@ const debug = {
 function setup() {
   colorMode(HSB, 360, 100, 100, 100);
   createCanvas(windowWidth, windowHeight);
-  let attempts = 0;
-  let cx = width / 2;
-  let cy = height / 2;
-  while (polygons.length < NUM_POLYGONS && attempts < 1000) {
-    let pos = createVector(random(cx - FIELD_RADIUS, cx + FIELD_RADIUS), random(cy - FIELD_RADIUS, cy + FIELD_RADIUS));
-    let newRock = new Rock(pos);
-    if (!newRock.checkOverlap(polygons)) {
-      polygons.push(newRock);
-    }
-    attempts++;
-  }
+  polygons = generateRocks(NUM_POLYGONS,width/2,height/2,FIELD_RADIUS);
   hull = new Hull(polygons);
 }
 
-function draw() {
-  if (selectedPolygon) {
-    selectedPolygon.move();
+function generateRocks(num,cx,cy,radius) {
+  let arr = []
+  let attempts = 0;
+  while (arr.length < num && attempts < 1000) {
+    let pos = createVector(random(cx - radius, cx + radius), random(cy - radius, cy + radius));
+    let newRock = new Rock(pos);
+    if (!newRock.checkOverlap(arr)) {
+      arr.push(newRock);
+    }
+    attempts++;
   }
+  return arr
+}
+
+function draw() {
+  selectedPolygon && selectedPolygon.move();
   background(240, 5, 95);
   // draw polygons
   for (let poly of polygons) {
@@ -53,9 +51,8 @@ function draw() {
   debug.hArea.textContent = `Area: ${Math.round(hull.area / 1000)}`;
   let pArea = polygons.map((poly) => poly.area).reduce((a, b) => a + b, 0);
   debug.pArea.textContent = `Poly Area: ${Math.round(pArea / 1000)}`;
-  debug.efficiency.textContent = `Efficiency: ${ ((pArea / hull.area)*100).toFixed(0)}%`;
+  debug.efficiency.textContent = `Efficiency: ${((pArea / hull.area) * 100).toFixed(0)}%`;
 }
-
 function mousePressed() {
   if (selectedPolygon) {
     // if legal, drop
@@ -81,4 +78,6 @@ function mouseWheel(event) {
   selectedPolygon.rotate(angle * scalar);
   return false;
 }
-
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+}

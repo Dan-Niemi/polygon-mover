@@ -56,6 +56,7 @@ class Rock {
   }
 
   drawBase() {
+    
     fill(240, 10, this.brightness);
     noStroke();
     beginShape();

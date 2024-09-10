@@ -19,47 +19,4 @@ p, h1, h2, h3, h4, h5, h6 { overflow-wrap: break-word; }
 display: flex;
 gap: 1rem;
 }
-.menu {
-	position: absolute;
-	z-index: 10;
-	width: 100vw;
-	height: 100vh;
-	display: flex;
-	align-items: center;
-	justify-content:center;
-	pointer-events: auto;
 
-}
-.panel {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content:center;
-	gap: 2rem;
-	width: 100%;
-	height: 100%;
-	background-color: hsla(0, 0%, 100%,.7);
-	backdrop-filter: blur(10px);
-}
-.panel button {
-	border: none;
-	background-color: hsl(240, 10%, 10%);
-	font-weight: 900;
-	color: white;
-	font-size: 4rem;
-	padding: 2rem;
-	border-radius: 2rem;
-	cursor: pointer;
-}
-.panel button:hover {
-	background-color: hsl(240, 10%, 20%);
-}
-
-.instructions {
-	width: 80%;
-	display: grid;
-	grid-template-columns: 1fr 1fr 1fr;
-	gap: 1rem;
-	list-style: none;
-	font-size: 2rem;
-}
