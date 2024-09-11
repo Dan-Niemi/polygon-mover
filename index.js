@@ -1,11 +1,11 @@
 const NUM_POLYGONS = 15;
 let rotateClickPos = false;
+
 let polygons = [],
   selectedPolygon,
-  hull,
-  bg;
+  hull
 
-const debug = {
+const DEBUG = {
   hArea: document.querySelector("#area"),
   pArea: document.querySelector("#polygons"),
   efficiency: document.querySelector("#efficiency"),
@@ -15,6 +15,7 @@ function setup() {
   colorMode(HSB, 360, 100, 100, 100);
   createCanvas(windowWidth, windowHeight);
   noStroke();
+
   addRocks(NUM_POLYGONS, width / 2, height / 2, min(height, width) / 2);
   hull = new Hull(polygons);
 }
@@ -23,7 +24,7 @@ function addRocks(num = NUM_POLYGONS) {
   let buffer = 50;
   let failedAttempts = 0;
   for (let i = 0; i < num; ) {
-    let pos = createVector(random(buffer,width-buffer), random(buffer,height-buffer));
+    let pos = createVector(random(buffer, width - buffer), random(buffer, height - buffer));
     let newRock = new Rock(pos);
     if (!newRock.checkOverlap(polygons)) {
       polygons.push(newRock);
@@ -46,10 +47,10 @@ function draw() {
 
   hull.draw();
 
-  debug.hArea.textContent = `Area: ${Math.round(hull.area / 1000)}`;
   let pArea = polygons.map((poly) => poly.area).reduce((a, b) => a + b, 0);
-  debug.pArea.textContent = `Poly Area: ${Math.round(pArea / 1000)}`;
-  debug.efficiency.textContent = `Efficiency: ${((pArea / hull.area) * 100).toFixed(0)}%`;
+  DEBUG.hArea.textContent = `Area: ${Math.round(hull.area / 1000)}`;
+  DEBUG.pArea.textContent = `Poly Area: ${Math.round(pArea / 1000)}`;
+  DEBUG.efficiency.textContent = `Efficiency: ${((pArea / hull.area) * 100).toFixed(0)}%`;
 }
 function mousePressed() {
   if (selectedPolygon) {
@@ -62,7 +63,7 @@ function mousePressed() {
     for (let poly of polygons) {
       if (collidePointPoly(mouseX, mouseY, poly.vertices)) {
         selectedPolygon = poly;
-        poly.clickCenter = createVector(mouseX,mouseY)
+        poly.clickCenter = createVector(mouseX, mouseY);
         break;
       }
     }
