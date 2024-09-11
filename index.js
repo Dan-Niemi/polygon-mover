@@ -15,7 +15,6 @@ function setup() {
   colorMode(HSB, 360, 100, 100, 100);
   createCanvas(windowWidth, windowHeight);
   noStroke();
-
   addRocks(NUM_POLYGONS, width / 2, height / 2, min(height, width) / 2);
   hull = new Hull(polygons);
 }
@@ -52,6 +51,7 @@ function draw() {
   DEBUG.pArea.textContent = `Poly Area: ${Math.round(pArea / 1000)}`;
   DEBUG.efficiency.textContent = `Efficiency: ${((pArea / hull.area) * 100).toFixed(0)}%`;
 }
+
 function mousePressed() {
   if (selectedPolygon) {
     // if legal, drop

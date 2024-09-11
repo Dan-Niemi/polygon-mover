@@ -11,6 +11,7 @@ class Rock {
     this.highlightColor = color(0, 0, 100, 10);
     this.highlightVector = this.shadowVector.copy().mult(-0.5);
     this.overlapColor = color(0, 100, 100, 25);
+    
     this.g = createGraphics(300, 300);
     this.g.noStroke();
     this.clickCenter;
@@ -37,10 +38,7 @@ class Rock {
     return Math.abs(area) / 2;
   }
   get center() {
-    let c = createVector(0, 0);
-    c.x = this.vertices.map((v) => v.x).reduce((a, b) => a + b, 0) / this.numVertices;
-    c.y = this.vertices.map((v) => v.y).reduce((a, b) => a + b, 0) / this.numVertices;
-    return c;
+    return this.vertices.reduce((a,b) => p5.Vector.add(a,b)).div(this.numVertices)
   }
 
   checkOverlap(rocks) {
@@ -111,14 +109,12 @@ class Rock {
   move() {
     let pMouse = createVector(mouseX - pmouseX, mouseY - pmouseY);
     this.vertices.forEach((v) => v.add(pMouse));
-    this.clickCenter.add(pMouse)
+    this.clickCenter.add(pMouse);
   }
 
   rotate(angle) {
     let center = rotateClickPos ? this.clickCenter : this.center;
     this.rotation += angle;
     this.vertices.forEach((v) => v.sub(center).rotate(angle).add(center));
-
-    
   }
 }
