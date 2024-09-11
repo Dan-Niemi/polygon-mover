@@ -1,11 +1,16 @@
 const NUM_POLYGONS = 10;
-
+const KEY_ROTATION = .1
+const KEY_ROTATION_FINE = .01
+const MOUSE_ROTATION = .003
+const MOUSE_ROTATION_FINE = .0005
+const KEY_FINE = 83 //s key
+let dragMode = false;
 
 let polygons = [],
   rotateClickPos = false,
   selectedPolygon,
   hull,
-  debug
+  debug;
 
 function setup() {
   colorMode(HSB, 360, 100, 100, 100);
@@ -13,7 +18,7 @@ function setup() {
   noStroke();
   addRocks(NUM_POLYGONS, width / 2, height / 2, min(height, width) / 2);
   hull = new Hull(polygons);
-  debug = new Debug(document.querySelector('.debug'))
+  debug = new Debug(document.querySelector(".debug"));
 }
 
 function addRocks(num = NUM_POLYGONS) {
@@ -33,26 +38,25 @@ function addRocks(num = NUM_POLYGONS) {
 }
 
 function draw() {
+  getInput()
   background(240, 5, 95);
   selectedPolygon && selectedPolygon.move();
-  // draw base polygons
   polygons.forEach((poly) => poly.draw());
-  // draw overlapping overlay
   let overlapping = selectedPolygon && selectedPolygon.checkOverlap(polygons);
   overlapping && overlapping.forEach((item) => item.drawPoints(item.overlapColor));
   hull.draw();
-  debug.update()
-
+  debug.update();
 }
 
 function mousePressed() {
   if (selectedPolygon) {
-    // if legal, drop
+    // if not overlapping another, drop
     if (!selectedPolygon.checkOverlap(polygons)) {
       selectedPolygon = null;
       hull.update(polygons);
     }
   } else {
+    // if mouse is over a polygon, select that polygon
     for (let poly of polygons) {
       if (collidePointPoly(mouseX, mouseY, poly.vertices)) {
         selectedPolygon = poly;
@@ -62,15 +66,33 @@ function mousePressed() {
     }
   }
 }
+function mouseReleased() {
+  if (dragMode && selectedPolygon) {
+    if (!selectedPolygon.checkOverlap(polygons)) {
+      selectedPolygon = null;
+      hull.update(polygons);
+    }
+  }
+}
+
 function mouseWheel(event) {
   if (!selectedPolygon) return false;
   const MAX_SPEED = 200;
   let angle = constrain(event.delta, -MAX_SPEED, MAX_SPEED);
-  let isFine = keyIsDown(91); //command key
-  let scalar = isFine ? 0.0005 : 0.003;
-  selectedPolygon.rotate(angle * scalar);
+  selectedPolygon.rotate(angle * (keyIsDown(KEY_FINE) ? MOUSE_ROTATION_FINE : MOUSE_ROTATION));
   return false;
 }
+
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+}
+
+function getInput() {
+
+  if (keyIsDown(65)) {
+    selectedPolygon && selectedPolygon.rotate(keyIsDown(KEY_FINE) ? -KEY_ROTATION_FINE : -KEY_ROTATION);
+  }
+  if (keyIsDown(68)) {
+    selectedPolygon && selectedPolygon.rotate(keyIsDown(KEY_FINE) ? KEY_ROTATION_FINE : KEY_ROTATION);
+  }
 }

@@ -1,31 +1,32 @@
 class Rock {
   constructor(pos) {
     this.numVertices = int(random(5, 12));
-    this.vertices = [];
     this.radius = random(40, 100);
     // VISUALS
     this.brightness = random(60, 80);
     this.color = color(240, 10, this.brightness);
     this.shadowColor = color(0, 0, 0, 10);
     this.shadowVector = createVector(-10, -5);
-    this.highlightColor = color(0, 0, 100, 10);
-    this.highlightVector = this.shadowVector.copy().mult(-0.5);
     this.overlapColor = color(0, 100, 100, 25);
-    
+
     this.g = createGraphics(300, 300);
     this.g.noStroke();
+    //CHANGABLE STATE
+    this.vertices = [];
     this.clickCenter;
     this.rotation = 0;
 
-    for (let i = 0; i < this.numVertices; i++) {
-      let angle = random(TWO_PI);
-      let x = pos.x + this.radius * cos(angle);
-      let y = pos.y + this.radius * sin(angle);
-      this.vertices.push(createVector(x, y));
-    }
-    this.vertices.sort((a, b) => atan2(a.y - pos.y, a.x - pos.x) - atan2(b.y - pos.y, b.x - pos.x));
+    this.createVertices(pos);
     this.drawSpeckles(pos);
   }
+
+  createVertices(pos) {
+    for (let i = 0; i < this.numVertices; i++) {
+      this.vertices.push(p5.Vector.fromAngle(random(TAU), this.radius).add(pos));
+    }
+    this.vertices.sort((a, b) => p5.Vector.sub(a, pos).heading() - p5.Vector.sub(b, pos).heading());
+  }
+
   get area() {
     let area = 0;
     let n = this.numVertices;
@@ -38,7 +39,7 @@ class Rock {
     return Math.abs(area) / 2;
   }
   get center() {
-    return this.vertices.reduce((a,b) => p5.Vector.add(a,b)).div(this.numVertices)
+    return this.vertices.reduce((a, b) => p5.Vector.add(a, b)).div(this.numVertices);
   }
 
   checkOverlap(rocks) {
