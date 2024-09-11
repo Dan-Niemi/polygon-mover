@@ -20,7 +20,9 @@
       <span id="area"></span>
       <span id="polygons"></span>
       <span id="efficiency"></span>
-      <label>Show Area<input type="checkbox" onclick="hull.toggle(event)" /></label>
+      <label>Show Area<input type="checkbox" onclick="event.stopPropagation();hull.toggle(event)" /></label>
+      <label>Rotate from click position<input type="checkbox" onclick="rotateClickPos = !rotateClickPos" /></label>
+      <button onclick="event.stopPropagation(); addRocks()">More Rocks</button>
     </div>
 
   </body>

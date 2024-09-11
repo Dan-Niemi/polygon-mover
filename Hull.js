@@ -55,12 +55,14 @@ class Hull {
   }
   draw() {
     if (this.show) {
+      push()
       noFill();
       stroke(0, 100, 100);
       strokeWeight(4);
       beginShape();
       hull.hullPoints.forEach((point) => vertex(point.x, point.y));
       endShape(CLOSE);
+      pop()
     }
   }
 }

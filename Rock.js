@@ -6,12 +6,15 @@ class Rock {
     // VISUALS
     this.brightness = random(60, 80);
     this.color = color(240, 10, this.brightness);
-    this.shadowColor = color(0, 0, 0, 5);
+    this.shadowColor = color(0, 0, 0, 10);
     this.shadowVector = createVector(-10, -5);
     this.highlightColor = color(0, 0, 100, 10);
     this.highlightVector = this.shadowVector.copy().mult(-0.5);
     this.overlapColor = color(0, 100, 100, 25);
-    this.g = createGraphics(width, height);
+    this.g = createGraphics(300, 300);
+    this.g.noStroke();
+    this.clickCenter;
+    this.rotation = 0;
 
     for (let i = 0; i < this.numVertices; i++) {
       let angle = random(TWO_PI);
@@ -20,7 +23,7 @@ class Rock {
       this.vertices.push(createVector(x, y));
     }
     this.vertices.sort((a, b) => atan2(a.y - pos.y, a.x - pos.x) - atan2(b.y - pos.y, b.x - pos.x));
-    this.drawSpeckles();
+    this.drawSpeckles(pos);
   }
   get area() {
     let area = 0;
@@ -84,45 +87,38 @@ class Rock {
     endClip();
     this.drawPoints(this.shadowColor);
     pop();
-    //draw highlight
+
     push();
-    beginClip({ invert: true });
-    this.drawPoints(this.color, this.highlightVector);
+    beginClip();
+    this.drawPoints(this.color);
     endClip();
-    this.drawPoints(this.highlightColor);
+    translate(this.center);
+    rotate(this.rotation);
+    image(this.g, -this.radius, -this.radius);
     pop();
-    //draw speckles
-    image(this.g, 0, 0);
     // draw selected overlay
     this === selectedPolygon && this.drawPoints(this.shadowColor);
   }
 
   drawSpeckles() {
-    this.g.fill(this.shadowColor);
-    const r = this.radius;
-    const c = this.center;
-    for (let y = c.y - r; y < c.y + r; y += 5) {
-      for (let x = c.x - r; x < c.x + r; x += 5) {
-        this.g.ellipse(x, y, 10);
-      }
+    this.g.colorMode(HSB, 360, 100, 100, 100);
+    for (let i = 0; i < 500; i++) {
+      this.g.fill(240, 0, random(100), random(25));
+      this.g.ellipse(random(this.g.width), random(this.g.height), random(4));
     }
-    
   }
 
   move() {
-    for (let v of this.vertices) {
-      v.x += mouseX - pmouseX;
-      v.y += mouseY - pmouseY;
-    }
+    let pMouse = createVector(mouseX - pmouseX, mouseY - pmouseY);
+    this.vertices.forEach((v) => v.add(pMouse));
+    this.clickCenter.add(pMouse)
   }
 
   rotate(angle) {
-    let center = this.center;
-    for (let v of this.vertices) {
-      let x = v.x - center.x;
-      let y = v.y - center.y;
-      v.x = center.x + x * cos(angle) - y * sin(angle);
-      v.y = center.y + x * sin(angle) + y * cos(angle);
-    }
+    let center = rotateClickPos ? this.clickCenter : this.center;
+    this.rotation += angle;
+    this.vertices.forEach((v) => v.sub(center).rotate(angle).add(center));
+
+    
   }
 }

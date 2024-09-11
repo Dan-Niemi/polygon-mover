@@ -1,7 +1,9 @@
 const NUM_POLYGONS = 15;
-const FIELD_RADIUS = 400;
-
-let polygons, selectedPolygon, hull;
+let rotateClickPos = false;
+let polygons = [],
+  selectedPolygon,
+  hull,
+  bg;
 
 const debug = {
   hArea: document.querySelector("#area"),
@@ -13,29 +15,31 @@ function setup() {
   colorMode(HSB, 360, 100, 100, 100);
   createCanvas(windowWidth, windowHeight);
   noStroke();
-  polygons = generateRocks(NUM_POLYGONS, width / 2, height / 2, FIELD_RADIUS);
+  addRocks(NUM_POLYGONS, width / 2, height / 2, min(height, width) / 2);
   hull = new Hull(polygons);
 }
 
-function generateRocks(num, cx, cy, radius) {
-  let arr = [];
-  let attempts = 0;
-  while (arr.length < num && attempts < 1000) {
-    let pos = createVector(random(cx - radius, cx + radius), random(cy - radius, cy + radius));
+function addRocks(num = NUM_POLYGONS) {
+  let buffer = 50;
+  let failedAttempts = 0;
+  for (let i = 0; i < num; ) {
+    let pos = createVector(random(buffer,width-buffer), random(buffer,height-buffer));
     let newRock = new Rock(pos);
-    if (!newRock.checkOverlap(arr)) {
-      arr.push(newRock);
+    if (!newRock.checkOverlap(polygons)) {
+      polygons.push(newRock);
+      i++;
+    } else {
+      failedAttempts++;
+      if (failedAttempts > 50) return;
     }
-    attempts++;
   }
-  return arr;
 }
 
 function draw() {
-  selectedPolygon && selectedPolygon.move();
   background(240, 5, 95);
+  selectedPolygon && selectedPolygon.move();
   // draw base polygons
-  polygons.forEach(poly => poly.draw())
+  polygons.forEach((poly) => poly.draw());
   // draw overlapping overlay
   let overlapping = selectedPolygon && selectedPolygon.checkOverlap(polygons);
   overlapping && overlapping.forEach((item) => item.drawPoints(item.overlapColor));
@@ -58,6 +62,7 @@ function mousePressed() {
     for (let poly of polygons) {
       if (collidePointPoly(mouseX, mouseY, poly.vertices)) {
         selectedPolygon = poly;
+        poly.clickCenter = createVector(mouseX,mouseY)
         break;
       }
     }
