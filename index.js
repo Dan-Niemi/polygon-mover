@@ -1,15 +1,11 @@
-const NUM_POLYGONS = 15;
-let rotateClickPos = false;
+const NUM_POLYGONS = 10;
+
 
 let polygons = [],
+  rotateClickPos = false,
   selectedPolygon,
-  hull
-
-const DEBUG = {
-  hArea: document.querySelector("#area"),
-  pArea: document.querySelector("#polygons"),
-  efficiency: document.querySelector("#efficiency"),
-};
+  hull,
+  debug
 
 function setup() {
   colorMode(HSB, 360, 100, 100, 100);
@@ -17,13 +13,14 @@ function setup() {
   noStroke();
   addRocks(NUM_POLYGONS, width / 2, height / 2, min(height, width) / 2);
   hull = new Hull(polygons);
+  debug = new Debug(document.querySelector('.debug'))
 }
 
 function addRocks(num = NUM_POLYGONS) {
-  let buffer = 50;
+  let margin = 50;
   let failedAttempts = 0;
   for (let i = 0; i < num; ) {
-    let pos = createVector(random(buffer, width - buffer), random(buffer, height - buffer));
+    let pos = createVector(random(margin, width - margin), random(margin, height - margin));
     let newRock = new Rock(pos);
     if (!newRock.checkOverlap(polygons)) {
       polygons.push(newRock);
@@ -43,13 +40,9 @@ function draw() {
   // draw overlapping overlay
   let overlapping = selectedPolygon && selectedPolygon.checkOverlap(polygons);
   overlapping && overlapping.forEach((item) => item.drawPoints(item.overlapColor));
-
   hull.draw();
+  debug.update()
 
-  let pArea = polygons.map((poly) => poly.area).reduce((a, b) => a + b, 0);
-  DEBUG.hArea.textContent = `Area: ${Math.round(hull.area / 1000)}`;
-  DEBUG.pArea.textContent = `Poly Area: ${Math.round(pArea / 1000)}`;
-  DEBUG.efficiency.textContent = `Efficiency: ${((pArea / hull.area) * 100).toFixed(0)}%`;
 }
 
 function mousePressed() {

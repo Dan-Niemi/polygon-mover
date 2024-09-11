@@ -9,21 +9,20 @@
     <script defer src="alpine.js"></script>
     <script defer src="Rock.js"></script>
     <script defer src="Hull.js"></script>
+    <script defer src="Debug.js"></script>
     <script defer src="index.js"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="index.css" />
   </head>
 
   <body x-data="game()">
-
-    <div class="debug">
-      <span id="area"></span>
-      <span id="polygons"></span>
-      <span id="efficiency"></span>
-      <label>Show Hull<input type="checkbox" onclick="hull.toggle(event)" /></label>
-      <label>Rotate from click position<input type="checkbox" onclick="rotateClickPos = !rotateClickPos" /></label>
-      <button onclick="addRocks(5)">More Rocks</button>
+    <div class="sidebar">
+      <div class="debug"></div>
+      <div class="control">
+        <label>Show Hull<input type="checkbox" onclick="hull.toggle(event)" /></label>
+        <label>Rotate from click position<input type="checkbox" onclick="rotateClickPos = !rotateClickPos" /></label>
+        <button onclick="addRocks(5)">More Rocks</button>
+      </div>
     </div>
-
   </body>
 </html>
